@@ -21,8 +21,8 @@ SELECT
   toFloat32(fact / retail_transaction) AS avg_retail_transaction_price, -- среднеяя выручка за транзакцию,
   --CASE WHEN data = toStartOfMonth(today() - interval 2 day) THEN fact/toDayOfMonth(today() - interval 2 day) * toDayOfMonth(toLastDayOfMonth(today() - interval 2 day)) ELSE null END AS RR_retail,
   retail_chek / clientsflow as conversion_retail,
-  clientsflow / toFloat32(t4.clientsflow_prev_year) - 1 as LFL_clientsflow,
-  conversion_retail - toFloat32(t3.retail_chek_prev_year)/ toFloat32(t4.clientsflow_prev_year) as LFL_conversion
+  if(toFloat32(t4.clientsflow_prev_year) = 0, 0, clientsflow / toFloat32(t4.clientsflow_prev_year) - 1) as LFL_clientsflow,
+  if(toFloat32(t4.clientsflow_prev_year) = 0, 0, conversion_retail - toFloat32(t3.retail_chek_prev_year)/ toFloat32(t4.clientsflow_prev_year)) as LFL_conversion
 FROM
   (
   WITH if(project = '', 'Розница 1.0', project) AS proj 
