@@ -1,5 +1,5 @@
 SELECT
-  /* Транзакция рейтейл - Одна позиция в чеке, без учета количества. */
+  /* Транзакция рейтейл - Одна позиция в чеке, без учета количества.  */
   t0.data AS data,
   dictGetString('ops_thes', 'mrc', toUInt64(t0.index_id)) as mrc,
   dictGetString('ops_thes', 'ufps', toUInt64(t0.index_id)) as ufps,
@@ -37,12 +37,7 @@ FROM
     1 = 1 
     AND dictGetString('product_thes', 'prod_group', (dictGetUInt8('ops_thes', 'region', toUInt64(index_id)), item_id)) = 'Товары' 
     AND sales_id = 'Терминал' 
-    AND 
-    (
-    trans_date BETWEEN toStartOfMonth(today() - interval 2 month) and today() - interval 2 day
-    OR trans_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 1 year) and toLastDayOfMonth(today() + interval 2 month - interval 1 year)
-    OR trans_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 2 year) and toLastDayOfMonth(today() + interval 2 month - interval 2 year)
-    )
+    AND trans_date BETWEEN '2022-01-01' and today() - interval 2 day
   GROUP BY 
     data, 
     index_id, 
@@ -59,12 +54,7 @@ FROM
     read.etf_raw --Витрина предназначена для хранения данных по качеству обслуживания клиентов в ОПС с СУО (транзакции, ср. время чека, ср. сумма чека и тд.)
   WHERE 
     1 = 1 
-    AND 
-    (
-    trans_date BETWEEN toStartOfMonth(today() - interval 2 month) and today() - interval 2 day
-    OR trans_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 1 year) and toLastDayOfMonth(today() + interval 2 month - interval 1 year)
-    OR trans_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 2 year) and toLastDayOfMonth(today() + interval 2 month - interval 2 year)
-    )
+    AND trans_date BETWEEN '2022-01-01' and today() - interval 2 day
   GROUP BY 
     data, 
     index_id
@@ -78,12 +68,8 @@ FROM
     read.clients_flow_olap -- Витрина используется при расчете конверсии - retail check/ clientsflow, т.е. Кол-во розничных чеков, включая РПО, разделить на Общее количество клиентов.
   WHERE 
     1 = 1
-    AND
-    (
-    oper_date BETWEEN toStartOfMonth(today() - interval 2 month) and today() - interval 2 day
-    OR oper_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 1 year) and toLastDayOfMonth(today() + interval 2 month - interval 1 year)
-    OR oper_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 2 year) and toLastDayOfMonth(today() + interval 2 month - interval 2 year)
-    )  
+    AND oper_date BETWEEN '2022-01-01' and today() - interval 2 day
+
   GROUP BY 
     index_id,
     data
@@ -99,12 +85,7 @@ FROM
     1 = 1 
     AND dictGetString('product_thes', 'prod_group', (dictGetUInt8('ops_thes', 'region', toUInt64(index_id)), item_id)) = 'Товары' 
     AND sales_id = 'Терминал' 
-    AND 
-    (
-    trans_date BETWEEN toStartOfMonth(today() - interval 2 month) and today() - interval 2 day
-    OR trans_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 1 year) and toLastDayOfMonth(today() + interval 2 month - interval 1 year)
-    OR trans_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 2 year) and toLastDayOfMonth(today() + interval 2 month - interval 2 year)
-    )
+    AND trans_date BETWEEN '2021-01-01' and toLastDayOfMonth(today() - interval 1 year)
   GROUP BY 
     data, 
     index_id
@@ -118,12 +99,7 @@ FROM
     read.clients_flow_olap -- Витрина используется при расчете конверсии - retail check/ clientsflow, т.е. Кол-во розничных чеков, включая РПО, разделить на Общее количество клиентов.
   WHERE 
     1 = 1
-    AND
-    (
-    oper_date BETWEEN toStartOfMonth(today() - interval 2 month) and today() - interval 2 day
-    OR oper_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 1 year) and toLastDayOfMonth(today() + interval 2 month - interval 1 year)
-    OR oper_date BETWEEN toStartOfMonth(today() - interval 2 month - interval 2 year) and toLastDayOfMonth(today() + interval 2 month - interval 2 year)
-    )  
+    AND oper_date BETWEEN '2020-01-01' and toLastDayOfMonth(today() - interval 1 year)
   GROUP BY 
     index_id,
     data
