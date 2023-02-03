@@ -30,7 +30,7 @@ FROM
     SUM(amount) AS summa, 
     SUM(qty) AS qty, 
     COUNT() AS retail_transaction, 
-    uniqExact((cheqway, index_id, trans_date)) AS retail_check --поскольку нумерация чеков обнуляется, группировка идет в пределах дня
+    uniqExact(cheqway, index_id, trans_date) AS retail_check --поскольку нумерация чеков обнуляется, группировка идет в пределах дня
   FROM 
     read.retail_olap 
   WHERE 
@@ -69,7 +69,6 @@ FROM
   WHERE 
     1 = 1
     AND oper_date BETWEEN '2022-01-01' and today() - interval 2 day
-
   GROUP BY 
     index_id,
     data
@@ -78,7 +77,7 @@ FROM
   SELECT 
     toStartOfMonth(trans_date) AS data,
     index_id,
-    uniqExact((cheqway, index_id, trans_date)) AS retail_check_prev_year --поскольку нумерация чеков обнуляется, группировка идет в пределах дня
+    uniqExact(cheqway, index_id, trans_date) AS retail_check_prev_year --поскольку нумерация чеков обнуляется, группировка идет в пределах дня
   FROM 
     read.retail_olap 
   WHERE 
@@ -99,11 +98,11 @@ FROM
     read.clients_flow_olap -- Витрина используется при расчете конверсии - retail check/ clientsflow, т.е. Кол-во розничных чеков, включая РПО, разделить на Общее количество клиентов.
   WHERE 
     1 = 1
-    AND oper_date BETWEEN '2020-01-01' and toLastDayOfMonth(today() - interval 1 year)
+    AND oper_date BETWEEN '2021-01-01' and toLastDayOfMonth(today() - interval 1 year)
   GROUP BY 
     index_id,
     data
-) AS t4 ON t0.data_key = t4.data AND t0.index_id = t4.index_id  
+  ) AS t4 ON t0.data_key = t4.data AND t0.index_id = t4.index_id  
 ORDER BY
   data,
   mrc,
